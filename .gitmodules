@@ -1,0 +1,3 @@
+[submodule "micropython-midi"]
+	path = midi
+	url = git@github.com:cjbarnes18/micropython-midi.git
