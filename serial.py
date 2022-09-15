@@ -2,6 +2,8 @@
 Implement enough of the 'pyb' Serial class to get the Midi class working.
 """
 
+DEBUG=False
+
 class Serial:
   def __init__(self, uart):
     self.port = uart
@@ -11,8 +13,8 @@ class Serial:
     if isinstance(msg, int):
       to_send = msg.to_bytes(1, 'big')
     else:
-      print(type(msg))
       to_send = msg
 
-    print("msg='{msg}' to_send='{to_send}'".format(msg = msg, to_send = to_send))
+    if DEBUG:
+      print("msg='{msg}' to_send='{to_send}'".format(msg = msg, to_send = to_send))
     self.port.write(to_send)
