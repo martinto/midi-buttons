@@ -10,32 +10,28 @@ import midi
 UARTNUMBER=1
 # This can safely be changed.
 MIDICHANNEL=1
-
-# Create a handler for a button press. There's no real
-# need to debounce the buttons, multiple hits don't
-# matter, it will just send repeated program change
-# messages.
-def make_button_handler(program_number):
-  def _function(Pin):
-    instrument.program_change(program_number)
-  return _function
-
-program_number = 0
-def setup_handler(pin, program_number):
-  handler = make_button_handler(program_number)
-  button = Pin(pin, Pin.IN, Pin.PULL_DOWN)
-  button.irq(trigger=Pin.IRQ_RISING, handler=handler)
-
-for pin in range(0, 4): # pin 0-3
-  setup_handler(pin, program_number)
-  program_number += 1
-
-for pin in range(6, 29): # pin 6-28
-  setup_handler(pin, program_number)
-  program_number += 1
+BUTTONS=[None]*29
+BUTTON_STATE=[1]*29
 
 uart = machine.UART(UARTNUMBER,31250)
-instrument = midi.Controller(Serial(uart), channel=MIDICHANNEL)
+INSTRUMENT = midi.Controller(Serial(uart), channel=MIDICHANNEL)
+
+for pinno in range(0, 4): # pin 0-3
+  BUTTONS[pinno] = Pin(pinno, Pin.IN, Pin.PULL_UP)
+for pinno in range(6, 29): # pin 6-28
+  BUTTONS[pinno] = Pin(pinno, Pin.IN, Pin.PULL_UP)
 
 while True:
-  sleep(1)
+  for pinno in range(0, 4): # pin 0-3
+    if BUTTONS[pinno].value() != BUTTON_STATE[pinno]:
+      BUTTON_STATE[pinno] = BUTTONS[pinno].value()
+      if BUTTON_STATE[pinno] == 0:
+        print("Button ", pinno, " down")
+        INSTRUMENT.program_change(pinno)
+  for pinno in range(6, 29): # pin 6-28
+    if BUTTONS[pinno].value() != BUTTON_STATE[pinno]:
+      BUTTON_STATE[pinno] = BUTTONS[pinno].value()
+      if BUTTON_STATE[pinno] == 0:
+        print("Button ", pinno, " down")
+        INSTRUMENT.program_change(pinno)
+  sleep(0.001)
