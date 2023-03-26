@@ -34,7 +34,7 @@ while True:
       if BUTTON_STATE[pinno] == 0:
         print("Global ", pinno, " down")
         INSTRUMENT.control_change(pinno + 1, 1)
-  for pinno in range(9, 12): # pin 9-11
+  for pinno in range(9, 13): # pin 9-12
     if BUTTONS[pinno].value() != BUTTON_STATE[pinno]:
       BUTTON_STATE[pinno] = BUTTONS[pinno].value()
       if BUTTON_STATE[pinno] == 0:
