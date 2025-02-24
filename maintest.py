@@ -4,6 +4,7 @@ from buttons import Buttons
 from debounce import DebouncedSwitch
 import midi
 
+DEBUG=False
 MIDICHANNEL=4
 MIDI_TX = 4
 MIDI_RX = 5
@@ -19,8 +20,10 @@ def button_pressed(x):
     if x[0].value():
         button_number = x[1]
         pc = buttons.midi_pc_number(button_number)
-        print(f"{button_number}: {pc}")
-        mport.send_program_change(MIDICHANNEL, pc)
+        if pc != Buttons.INVALID:
+            if DEBUG:
+                print(f"{button_number}: {pc}")
+            mport.send_program_change(MIDICHANNEL, pc)
 
 while True:
     sleep(1)
