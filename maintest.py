@@ -11,7 +11,7 @@ MIDI_RX = 5
 UART_1 = 1
 
 def handle_button_irq(x:Pin, n:int):
-    DebouncedSwitch(x, button_pressed, [x, n])
+    DebouncedSwitch(x, button_pressed, [x, n], delay = 25)
 
 mport = midi.Midi(UART_1, tx=MIDI_TX, rx=MIDI_RX)
 buttons = Buttons(handle_button_irq)
@@ -22,7 +22,7 @@ def button_pressed(x):
         pc = buttons.midi_pc_number(button_number)
         if pc != Buttons.INVALID:
             if DEBUG:
-                print(f"{button_number}: {pc}")
+                print(f"{button_number}: {pc} value:{x[0].value()}")
             mport.send_program_change(MIDICHANNEL, pc)
 
 while True:

@@ -1,6 +1,7 @@
 from machine import Pin
 
 class Buttons:
+    _DEBUG = False
     GLOBAL_TOGGLE = 9
     COMBINATION = 1
     COMBINATION_BASE_GLOBAL = 0
@@ -20,9 +21,9 @@ class Buttons:
 
     def __init__(self, handler) -> None:
         for b in self._buttonpins:
-            p = Pin(b, Pin.IN, Pin.PULL_UP)
+            p = Pin(b, Pin.IN, 0)
             self._buttons.append(0)
-            p.irq(trigger = Pin.IRQ_FALLING, handler = lambda p, b=b:handler(p, self._buttonpins.index(b)))
+            p.irq(trigger = Pin.IRQ_RISING, handler = lambda p, b=b:handler(p, self._buttonpins.index(b)))
         self._led = Pin(self._ledpin, Pin.OUT)
         if self._is_global:
             self._led.high()
@@ -51,6 +52,8 @@ class Buttons:
 
     def midi_pc_number(self, n:int) -> int:
         btn_t = self._button_type(n)
+        if self._DEBUG:
+            print(f"n={n} btn_t={btn_t}")
         pc = Buttons.INVALID
         if btn_t == Buttons.GLOBAL_TOGGLE:
             pc = Buttons.GLOBAL_TOGGLE
