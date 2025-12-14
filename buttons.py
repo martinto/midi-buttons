@@ -19,11 +19,16 @@ class Buttons:
     _is_global = True
     _combination_base = COMBINATION_BASE_GLOBAL
 
-    def __init__(self, handler) -> None:
+    def __init__(self, handler, handle_button_irq) -> None:
+        if self._DEBUG:
+            print("Buttons init")
         for b in self._buttonpins:
-            p = Pin(b, Pin.IN, 0)
+            if self._DEBUG:
+                print(f"Buttons init pin={b}")
+            p = Pin(b, Pin.IN, 0, value=1)
             self._buttons.append(0)
             p.irq(trigger = Pin.IRQ_RISING, handler = lambda p, b=b:handler(p, self._buttonpins.index(b)))
+            handle_button_irq(p, self._buttonpins.index(b))
         self._led = Pin(self._ledpin, Pin.OUT)
         if self._is_global:
             self._led.high()
