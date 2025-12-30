@@ -8,11 +8,12 @@ class Buttons:
     COMBINATION_BASE_MANUAL = 20
     PED_GT_COUPLER = 10
     PED_SWELL_COUPLER = 11
-    CANCEL = 12
+    SWELL_GT_COUPLER = 12
+    CANCEL = 14
     INVALID = 0
 
     _buttonpins = [ 0, 2, 3 ]
-    _buttonpins.extend(range(6, 15))
+    _buttonpins.extend(range(6, 17))
     _ledpin = 1
     _buttons = []
     _led:Pin
@@ -24,7 +25,7 @@ class Buttons:
             print("Buttons init")
         for b in self._buttonpins:
             if self._DEBUG:
-                print(f"Buttons init pin={b}")
+                print(f"Buttons init pin={b} index={self._buttonpins.index(b)}")
             p = Pin(b, Pin.IN, 0, value=1)
             self._buttons.append(0)
             p.irq(trigger = Pin.IRQ_RISING, handler = lambda p, b=b:handler(p, self._buttonpins.index(b)))
@@ -51,6 +52,8 @@ class Buttons:
         elif n == 10:
             return Buttons.PED_SWELL_COUPLER
         elif n == 11:
+            return Buttons.SWELL_GT_COUPLER
+        elif n == 13:
             return Buttons.CANCEL
         else:
             return Buttons.INVALID
@@ -68,6 +71,8 @@ class Buttons:
             pc = Buttons.PED_GT_COUPLER
         elif btn_t == Buttons.PED_SWELL_COUPLER:
             pc = Buttons.PED_SWELL_COUPLER
+        elif btn_t == Buttons.SWELL_GT_COUPLER:
+            pc = Buttons.SWELL_GT_COUPLER
         elif btn_t == Buttons.CANCEL:
             pc = Buttons.CANCEL
         return pc
